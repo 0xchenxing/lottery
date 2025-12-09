@@ -233,7 +233,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            width: 90px;
+            width: 110px;
             height: 90px;
             background: linear-gradient(135deg, #1a237e, #311b92);
             border-radius: 15px;
@@ -256,9 +256,11 @@
         
         /* 数字文本样式 */
         .number-text {
-            font-size: 1.3em;
+            font-size: 1.2em;
             font-weight: bold;
             transition: transform 0.1s ease, color 0.1s ease;
+            letter-spacing: 1px;
+            text-align: center;
         }
         
         /* 数字滚动动画 */
@@ -351,21 +353,18 @@
         .images-section {
             display: flex;
             justify-content: center;
-            align-items: stretch;
-            gap: 20px;
+            align-items: center;
+            gap: 30px;
             margin: 30px 0;
             flex-wrap: wrap;
         }
 
         .image-container {
-            flex: 1;
-            max-width: 450px;
-            min-width: 300px;
+            flex: 0 0 auto;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             border-radius: 10px;
             overflow: hidden;
             transition: transform 0.3s ease;
-            height: auto; /* 自动高度，根据图片比例调整 */
         }
 
         .image-container:hover {
@@ -373,7 +372,7 @@
         }
 
         .image-container img {
-            width: 100%;
+            width: 450px;
             height: auto;
             object-fit: contain;
             display: block;
@@ -398,12 +397,32 @@
             }
             
             .result-number {
-                width: 80px;
+                width: 95px;
                 height: 80px;
-                font-size: 1.5rem;
+                font-size: 1.4rem;
             }
             
-            /* 响应式设计 */
+            /* 数字文本样式 - 小屏幕 */
+            .result-number .number-text {
+                font-size: 1.1em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .result-number {
+                width: 85px;
+                height: 70px;
+                font-size: 1.2rem;
+            }
+            
+            .result-container {
+                gap: 10px;
+                padding: 15px;
+            }
+        }
+        
+        /* 响应式设计 - 图片区域 */
+        @media (max-width: 768px) {
             .images-section {
                 flex-direction: column;
                 gap: 15px;
@@ -411,7 +430,12 @@
 
             .image-container {
                 max-width: 100%;
-                min-width: auto;
+            }
+            
+            .image-container img {
+                width: 100%;
+                height: auto;
+                max-height: 400px;
             }
         }
     </style>
@@ -439,12 +463,12 @@
             <div class="input-section">
                 <div class="input-group">
                     <label for="phoneNumbers">手机尾号列表</label>
-                    <textarea id="phoneNumbers" placeholder="请输入手机尾号，每行一个或用逗号分隔&#10;例如：&#10;1234&#10;5678&#10;9012&#10;3456"></textarea>
+                    <textarea id="phoneNumbers" placeholder="请输入手机尾号，每行一个或用逗号分隔&#10;例如：&#10;12345&#10;56789&#10;90123&#10;34567"></textarea>
                     <div class="stats">
                         <div>有效尾号数: <span id="validCount">0</span></div>
                         <div>重复尾号数: <span id="duplicateCount">0</span></div>
                     </div>
-                    <div class="input-hint">请输入4位数字的手机尾号（如：1234），每行一个或用逗号分隔</div>
+                    <div class="input-hint">请输入5位数字的手机尾号（如：12345），每行一个或用逗号分隔</div>
                 </div>
                 
                 <div class="input-group">
@@ -455,7 +479,7 @@
                 
                 <div class="input-group">
                     <label for="excludeNumbers">排除尾号（可选）</label>
-                    <input type="text" id="excludeNumbers" placeholder="输入要排除的尾号，用逗号分隔，如：1234,5678">
+                    <input type="text" id="excludeNumbers" placeholder="输入要排除的尾号，用逗号分隔，如：12345,56789">
                     <div class="input-hint">这些尾号将不会参与抽奖</div>
                 </div>
             </div>
@@ -486,7 +510,7 @@
         </div>
         
         <footer>
-            <p>第五届湾区元宇宙大会 &copy; 2025 | 采用 Fisher-Yates 洗牌算法确保随机性 | 尾号格式: XXXX (4位数字)</p>
+            <p>第五届湾区元宇宙大会 &copy; 2025 | 采用 Fisher-Yates 洗牌算法确保随机性 | 尾号格式: XXXXX (5位数字)</p>
         </footer>
     </div>
 
@@ -527,9 +551,9 @@
             return numbers;
         }
         
-        // 验证手机尾号格式（4位数字）
+        // 验证手机尾号格式（5位数字）
         function isValidPhoneTail(number) {
-            return /^\d{4}$/.test(number);
+            return /^\d{5}$/.test(number);
         }
         
         // 更新统计信息
@@ -556,7 +580,7 @@
             const m = parseInt(drawCountInput.value);
             
             if (validNumbers.length === 0) {
-                alert('请输入有效的手机尾号（4位数字）');
+                alert('请输入有效的手机尾号（5位数字）');
                 phoneNumbersInput.focus();
                 return false;
             }
@@ -946,20 +970,20 @@
             const savedNumbers = localStorage.getItem('phoneNumbers');
             const defaultNumbers = [
                 // 示例号码：用户可以在这里添加/修改所有号码
-                "1234", "5678", "9012", "3456", "7890",
-                "2345", "6789", "0123", "4567", "8901",
-                "1111", "2222", "3333", "4444", "5555",
-                "6666", "7777", "8888", "9999", "0000",
-                "1357", "2468", "1593", "2684", "3579",
-                "1470", "2580", "3690", "4561", "7892",
-                "3210", "6543", "9876", "3141", "5926",
-                "5358", "9793", "2358", "1618", "2718",
-                "3142", "5772", "1212", "3434", "5656",
-                "7878", "9090", "1313", "2424", "3535",
-                "4646", "5757", "6868", "7979", "8080",
-                "1248", "2496", "3624", "4832", "5040",
-                "6248", "7456", "8664", "9872", "1080",
-                "2160", "3240", "4320", "5400", "6480"
+                "12345", "56789", "90123", "34567", "78901",
+                "23456", "67890", "01234", "45678", "89012",
+                "11111", "22222", "33333", "44444", "55555",
+                "66666", "77777", "88888", "99999", "00000",
+                "13579", "24680", "15935", "26842", "35791",
+                "14702", "25803", "36904", "45612", "78923",
+                "32109", "65432", "98765", "31415", "59265",
+                "53589", "97932", "23581", "16180", "27182",
+                "31425", "57721", "12123", "34345", "56567",
+                "78789", "90901", "13135", "24246", "35357",
+                "46468", "57579", "68680", "79791", "80802",
+                "12486", "24968", "36249", "48321", "50402",
+                "62484", "74568", "86640", "98724", "10806",
+                "21608", "32400", "43202", "54004", "64806"
             ];
             
             // 使用保存的号码或默认号码
